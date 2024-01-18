@@ -1,0 +1,25 @@
+name: untitled2
+version: '${version}'
+main: com.velocitypowered.untitled2.Untitled2
+api-version: '1.20'
+load: STARTUP
+
+commands:
+  die:
+    description: kills the player who types it
+    usage: /<command>
+  duel:
+    description: sends an invitation to duel another player
+    usage: /<command> <argument1>
+  day:
+    description: sets daytime
+  gamemodeC:
+    description: turns creative
+  gamemodeS:
+    description: turns survival
+  amidueling:
+    description: checks
+  duel accept:
+    description: Accepts a duel invitation if one has been sent to you
+  duel reject:
+    description: Rejects the duel request
