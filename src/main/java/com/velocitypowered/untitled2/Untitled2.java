@@ -1,5 +1,7 @@
 package com.velocitypowered.untitled2;
 
+import com.destroystokyo.paper.event.player.PlayerAdvancementCriterionGrantEvent;
+import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -7,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -21,6 +25,19 @@ public final class Untitled2 extends JavaPlugin implements Listener {
         // Plugin startup logic
         getServer().getPluginManager().registerEvents(this, this);
 
+    }
+
+    @Override
+    public void onDisable() {
+        // Get an array of all online players
+        Player[] onlinePlayers = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+
+        // Iterate through the array and perform actions for each player
+        for (Player player : onlinePlayers) {
+            if (duelManager.getDueling(player)){
+                duelManager.endDuel(player);
+            }
+        }
     }
 
     @Override
@@ -39,9 +56,13 @@ public final class Untitled2 extends JavaPlugin implements Listener {
         // /amidueling
         if(command.getName().equalsIgnoreCase("amidueling")){
             if (sender instanceof Player){
-                Player p = (Player) sender;
-                boolean isDueling = duelManager.getDueling(p);
-                p.sendMessage(" " + isDueling + " ");
+                    Player p = (Player) sender;
+                    if (duelManager.getDueling(p)!= null){
+                        boolean isDueling = duelManager.getDueling(p);
+                        p.sendMessage(" " + isDueling + " ");
+                    }else {
+                        p.sendMessage("The server doesn't think youre dueling. You might have lost your stuff because the server restarted while you were offline and dueling. I'm sorry");
+                    }
             }
         }
 
@@ -97,14 +118,17 @@ public final class Untitled2 extends JavaPlugin implements Listener {
                     }
                 }
                 else if (args.length == 1 && (args[0].equals("help"))){
-                    p1.sendMessage("Here is a summary of all duel commands:" + System.lineSeparator() + "/duel <playername> Lets you challenge the specified player to a duel" + System.lineSeparator() + "/duel accept  Lets you accept the most recent duel challenge you've received" + System.lineSeparator() + "/duel restore Lets you leave a duel and/or get your stuff back if there is a glitch");
+                    p1.sendMessage("§b" + "Here is a summary of all duel commands:" + "\n" + "\u00A7f" + "/duel <playername> Lets you challenge the specified player to a duel" + "\n" + "/duel accept  Lets you accept the most recent duel challenge you've received" + "\n" + "/duel restore Lets you leave a duel and/or get your stuff back if there is a glitch");
                 }
                 else if(args.length == 1) {                    //makes sure they typed in 1 argument
                     try {
                         String otherPlayerName = args[0];
                         Player targetPlayer = Bukkit.getPlayer(otherPlayerName);
-                        assert targetPlayer != null;
-                        duelManager.sendDuelRequest(p1, targetPlayer);
+                        if (targetPlayer != null){
+                            duelManager.sendDuelRequest(p1, targetPlayer);
+                        }else {
+                            p1.sendMessage("the target player is not a player");
+                        }
                     } catch (IllegalArgumentException e) {
                         p1.sendMessage("Please provide a valid player name");
                     }
@@ -122,6 +146,15 @@ public final class Untitled2 extends JavaPlugin implements Listener {
     //works if both leave
     //works if both die
     //try both ways to be safe
+
+    @EventHandler
+    public void onAdvancementGrant(PlayerAdvancementCriterionGrantEvent event) {
+        Player player = event.getPlayer();
+        if (duelManager.getDueling(player)) { //if the player is dueling
+            event.setCancelled(true);   // Cancel the event to prevent the advancement from being granted
+        }
+    }
+
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
         if(duelManager.getDueling(event.getPlayer()) ){ //if the player who died was dueling && duelManager.getDueling(event.getPlayer())!=null
@@ -135,7 +168,7 @@ public final class Untitled2 extends JavaPlugin implements Listener {
                 //ourguy.setLevel(((int) (ourguy.getLevel() * .8))); //sets player level lower if they die
 
                 assert opponent != null;
-                if (opponent.isOnline() && duelManager.getDueling(opponent)){
+                if (opponent.isOnline() && duelManager.getDueling(opponent) && (!opponent.isDead())){
                     duelManager.endDuel(opponent);
                 }
                 //guy1
@@ -162,6 +195,37 @@ public final class Untitled2 extends JavaPlugin implements Listener {
                 event.getDrops().clear();
             }
         }
+    }
+
+    @EventHandler
+    public void onEntityPickupItem(EntityPickupItemEvent event) { //dueling players can no longer pick items up, maybe consider not letting then break blocks
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
+
+            if (player != null){
+
+            }
+
+            // Check if you want to allow pickup for a specific player or condition
+            if (duelManager.getDueling(player)) {
+                // Cancel the event to prevent the player from picking up the item
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreakEvent(BlockBreakEvent event){ //dueling players cant break blocks
+        Player player = event.getPlayer();
+        if (player != null){
+            if (duelManager.getDueling(player)){
+                event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    public void serverRestart(ServerResourcesReloadedEvent event){
+
     }
 
 }

@@ -12,15 +12,18 @@ import java.util.Map;
 //the jar file is in build -> libs
 public class DuelManager {
     //test
-    //duel restore xp? and dying?
+    //duel xp gives less
+    //if two ppl die at the same time, the player that doenst respawn first gets stuff while dead and is glitched but leaves and rejoins
+    //dueling players shouldnt break blocks or pick up items
 
     //TO do
-    //maybe just give cooler shit
-    //fix up starting positions, make sure they can see each other
+    //targeted duel requests
+    //fix up starting positions /duel set
     //betting feature
-    //no advancements to noobs
     //make it so they can press the text button to accept or reject duel requests
-    //add different types of duels, like a bow duel
+    //add different types of duels, like a bow duel tnt and bow and trident duel
+    //exploit u can /duel with urself
+    //if the player is offline and dueling when the server restarts, they lose their stuff but thats out of my hands kinda
 
     public final Map<Player, Player> duelRequests;
 
