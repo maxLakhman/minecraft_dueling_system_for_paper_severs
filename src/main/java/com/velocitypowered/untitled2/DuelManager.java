@@ -25,7 +25,7 @@ public class DuelManager {
     //exploit u can /duel with urself
     //if the player is offline and dueling when the server restarts, they lose their stuff but thats out of my hands kinda
 
-    public final Map<Player, Player> duelRequests;
+    public final Map<Player, Player> duelRequests; //could make this a list if they specify it searches through at most 10 requests before it expires
 
     private final Map<String, Boolean> isDueling;
 
@@ -74,9 +74,7 @@ public class DuelManager {
         }
     }
 
-    public void acceptDuelRequestTargeted(Player acceptor, Player sender){
-        Player originalSender = this.duelRequests.get(acceptor);
-        //here I look through all the duel requests and ensure that the sender actually sent it
+    public void acceptDuelRequestTargeted(Player acceptor, Player originalSender){
 
     }
 

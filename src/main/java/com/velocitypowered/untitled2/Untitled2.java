@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -157,6 +158,10 @@ public final class Untitled2 extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event){
+        //Edge cases
+        //One guy restores then other guy respawns
+        //One guy respawns then other guy restores
+
         if(duelManager.getDueling(event.getPlayer()) ){ //if the player who died was dueling && duelManager.getDueling(event.getPlayer())!=null
             Player ourguy = event.getPlayer();
             ourguy.sendMessage("You lost! Loser!");
@@ -226,6 +231,19 @@ public final class Untitled2 extends JavaPlugin implements Listener {
     @EventHandler
     public void serverRestart(ServerResourcesReloadedEvent event){
 
+    }
+
+    @EventHandler
+    public void playerDisconnect(PlayerQuitEvent event){
+        //Edge cases for playerDisconnect
+        //what if one guy restores other guy DC's *This okay
+        //one guy DC's other guy restores *This okay
+        //what if one guy resapwns other guy DC's *On respawn theyd both get it
+        //what if one guy DC's other guy respawns *thers a check
+        Player player = event.getPlayer();
+        if(duelManager.getDueling(player)){
+            duelManager.endDuel(player); //end the duel for just the guy that leaves
+        }
     }
 
 }
