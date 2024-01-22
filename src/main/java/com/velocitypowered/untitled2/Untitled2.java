@@ -45,6 +45,7 @@ public final class Untitled2 extends JavaPlugin implements Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         // /die kills player
+        /*
         if(command.getName().equalsIgnoreCase("die")){
             if (sender instanceof Player){
                 Player p = (Player) sender;
@@ -92,6 +93,8 @@ public final class Untitled2 extends JavaPlugin implements Listener {
                 p.sendMessage("daay now");
             }
         }
+
+         */
 
         //what about pets? player world? /spawn? sheidls and armor DUEL WITH YOURSELF?
         //make a command for teleporting someone back to their bed with stuff, health
