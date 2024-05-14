@@ -1,0 +1,35 @@
+name: tp_duel-1.20.6
+version: '${version}'
+main: com.velocitypowered.tp_duel1.Tp_duel_1
+api-version: '1.20'
+load: STARTUP
+
+commands:
+  die:
+    description: kills the player who types it
+  duel:
+    description: sends an invitation to duel another player
+  day:
+    description: sets daytime
+  gamemodeC:
+    description: turns creative
+  gamemodeS:
+    description: turns survival
+  amidueling:
+    description: checks
+  duel accept:
+    description: Accepts a duel invitation if one has been sent to you
+  duel reject:
+    description: Rejects the duel request
+  duelfair:
+    description: sends an invitation to duel another player
+  duelfair accept:
+    description: Accepts a duel invitation if one has been sent to you
+  duelfair reject:
+    description: Rejects the duel request
+  duelset_p1:
+    description: Sets dueling location for p1
+  duelset_p2:
+    description: Sets dueling location for p2
+  sendClickableText:
+    description: Sends clickable text
